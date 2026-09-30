@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: NexTerm API
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      responses:
+        "200": {description: Healthy}
+  /capabilities:
+    get:
+      responses:
+        "200": {description: Capability document}
+  /sessions:
+    get:
+      responses:
+        "200": {description: Session list}
+    post:
+      responses:
+        "201": {description: Session created}
+  /sessions/{id}:
+    delete:
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "204": {description: Session removed}
+  /packages:
+    get:
+      responses:
+        "200": {description: Package index}
