@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"NexTermPackage",
+  "type":"object",
+  "required":["name","version","architecture","sha256"],
+  "properties":{
+    "name":{"type":"string"},
+    "version":{"type":"string"},
+    "architecture":{"type":"string"},
+    "sha256":{"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "dependencies":{"type":"array","items":{"type":"string"}},
+    "license":{"type":"string"},
+    "signature":{"type":"string"}
+  }
+}
