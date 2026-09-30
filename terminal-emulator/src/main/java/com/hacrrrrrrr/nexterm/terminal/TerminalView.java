@@ -1,0 +1,3 @@
+package com.hacrrrrrrr.nexterm.terminal;
+import android.content.Context;import android.graphics.*;import android.view.View;
+public final class TerminalView extends View{private final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);private final TerminalBuffer buffer=new TerminalBuffer(3000);public TerminalView(Context c){super(c);paint.setTypeface(Typeface.MONOSPACE);paint.setTextSize(28);paint.setColor(Color.LTGRAY);setBackgroundColor(Color.rgb(9,11,16));}public void write(String s){buffer.append(s);invalidate();}@Override protected void onDraw(Canvas c){super.onDraw(c);String[] a=buffer.snapshot();float y=paint.getTextSize(),h=paint.getFontSpacing();int start=Math.max(0,a.length-(int)(getHeight()/h));for(int i=start;i<a.length;i++){c.drawText(a[i],10,y,paint);y+=h;}}}
