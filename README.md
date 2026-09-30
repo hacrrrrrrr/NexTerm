@@ -1,48 +1,69 @@
 # NexTerm
 
-NexTerm is a real native Android terminal project. It launches a real interactive Android shell through a kernel-backed PTY; it is not a command-output simulator.
+**Real Android terminal + browser terminal project.**
 
-## Architecture
+> Sponsorship / collaboration: **hunterkritik@gmail.com**
 
-Android UI -> Kotlin -> JNI/NDK -> forkpty() -> /system/bin/sh
+NexTerm is being built as a real native Termux-class Android terminal, not a command-output simulator.
 
-The first runtime is rootless and app-private. Future releases will add a dedicated userspace, package manager, native developer tools, and optional rootless Linux distributions.
+## Two-in-one vision
 
-## Features in the bootstrap
+**Android app:** Android UI -> Terminal Emulator -> PTY -> NDK -> Linux/Android userspace.
 
-- Real Linux/Android PTY session
-- Native NDK process bridge
-- Interactive /system/bin/sh
-- PTY read/write/resize primitives
-- App-private HOME
-- Terminal keyboard handling
-- No root requirement
+**Browser client:** Browser -> authenticated WebSocket -> NexTerm Gateway -> PTY.
 
-## Roadmap
+The browser side does not fake a shell. It requires an explicit gateway/session.
 
-- Full VT/xterm parser and ANSI 256 colors
-- Cursor, alternate screen, scrollback and selection
-- Tabs and persistent sessions
-- Dedicated PREFIX/userspace
-- Signed package repository
-- Bash, Git, OpenSSH, curl, Python and Clang
-- Rootless PRoot Debian/Alpine/Ubuntu environments
-- File manager and developer tools
+## Project layout
+
+    app/
+    terminal-emulator/
+    nexterm-shared/
+    browser/
+    docs/
+
+## Features
+
+- Real kernel-backed PTY sessions
+- Native NDK process layer
+- Dedicated terminal-emulator module
+- Java + Kotlin + C++ architecture
+- Shared Android/browser session protocol
+- Browser terminal UI
+- VT100/VT220/xterm parser roadmap
+- 256-color and true-color rendering
+- Cursor and alternate-screen support
+- Mouse reporting, selection and clipboard
+- Tabs, splits and persistent sessions
+- Searchable scrollback and session recording
+- Hardware keyboard and custom terminal toolbar
+- File manager and environment profiles
+- Dedicated PREFIX filesystem
+- Native package manager and signed package repository
+- Git, OpenSSH, curl, Python and Clang
+- Rootless Linux distributions
+- Browser WebSocket gateway and authentication
+- PWA-friendly browser terminal
+- Java/Kotlin native integration
+
+## Security
+
+NexTerm will not expose a privileged Android shell to arbitrary web content. Android recommends origin-allowlisted WebView messaging for native/web communication rather than unrestricted JavaScript bridges.
+
+## Status
+
+Early engineering stage. The PTY foundation is real; the complete Linux userspace, package manager, production terminal parser, browser gateway and polished UI are under development.
 
 ## Build
 
-Requirements: Android Studio, JDK 17+, Android SDK 35, NDK 27.2.12479018.
-
-Build with:
+Open in Android Studio with Android SDK 35 and NDK 27.2.12479018.
 
     ./gradlew :app:assembleDebug
 
-Install with:
-
     adb install app/build/outputs/apk/debug/app-debug.apk
 
-NexTerm does not request root. Android's sandbox and security model remain in force.
+## Sponsorship
 
-## License
+For sponsorship, hardware support, infrastructure or collaboration:
 
-MIT
+**hunterkritik@gmail.com**
