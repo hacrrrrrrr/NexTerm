@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NexTerm API Studio</title><meta name="description" content="NexTerm API Generator and API Studio">
+<link rel="stylesheet" href="./style.css"></head>
+<body>
+<header><div class="brand"><span>⚡</span> NexTerm <small>API Studio</small></div><a href="https://github.com/hacrrrrrrr/NexTerm">GitHub</a></header>
+<main>
+<section class="hero"><div class="badge">NEXTERM PLATFORM</div><h1>Build your API.<br><em>Own your interface.</em></h1><p>Generate NexTerm API contracts, endpoints, OpenAPI documents and client snippets directly in your browser.</p><div class="actions"><button id="example">Load example</button><button class="ghost" id="download">Download OpenAPI</button></div></section>
+<section class="studio">
+<div class="panel"><div class="panelhead"><b>API DESIGNER</b><span id="status">Ready</span></div>
+<label>API name<input id="name" value="NexTerm API"></label>
+<label>Version<input id="version" value="1.0.0"></label>
+<label>Base path<input id="base" value="/api/v1"></label>
+<label>Endpoint<input id="path" value="/health"></label>
+<label>Method<select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option></select></label>
+<label>Description<input id="desc" value="Health check"></label>
+<button id="generate">Generate</button>
+</div>
+<div class="panel output"><div class="panelhead"><b>OPENAPI OUTPUT</b><button id="copy">Copy</button></div><pre id="yaml"></pre></div>
+</section>
+<section class="features"><article><b>OpenAPI</b><span>Generate a portable API contract.</span></article><article><b>Client snippets</b><span>curl, JavaScript and Java-ready output.</span></article><article><b>Static & free</b><span>Runs entirely in your browser. No server required.</span></article></section>
+</main>
+<footer>NexTerm · API Studio · Sponsorship: hunterkritik@gmail.com</footer>
+<script src="./app.js"></script></body></html>
