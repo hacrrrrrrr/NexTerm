@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(nexterm)
+add_library(nexterm-pty SHARED pty.cpp)
+target_compile_features(nexterm-pty PRIVATE cxx_std_17)
+target_compile_options(nexterm-pty PRIVATE -Wall -Wextra -Werror=return-type)
+find_library(log-lib log)
+target_link_libraries(nexterm-pty ${log-lib})
