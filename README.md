@@ -42,9 +42,9 @@ The browser side does not fake a shell. It requires an explicit gateway/session.
 - Native package manager and signed package repository
 - Git, OpenSSH, curl, Python and Clang
 - Rootless Linux distributions
+- NexTerm-native CLI and package manager
 - Browser WebSocket gateway and authentication
 - PWA-friendly browser terminal
-- Java/Kotlin native integration
 
 ## Security
 
