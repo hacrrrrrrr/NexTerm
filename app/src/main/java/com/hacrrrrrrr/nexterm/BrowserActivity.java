@@ -1,0 +1,3 @@
+package com.hacrrrrrrr.nexterm;
+import android.app.Activity;import android.os.Bundle;import android.webkit.WebSettings;import android.webkit.WebView;import android.webkit.WebViewClient;
+public final class BrowserActivity extends Activity{private WebView web;@Override public void onCreate(Bundle state){super.onCreate(state);web=new WebView(this);WebSettings s=web.getSettings();s.setJavaScriptEnabled(true);s.setDomStorageEnabled(true);web.setWebViewClient(new WebViewClient());web.loadUrl("file:///android_asset/browser/index.html");setContentView(web);}@Override protected void onDestroy(){if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}}
