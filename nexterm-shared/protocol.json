@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "messages": {
+    "input": {"data": "utf8"},
+    "output": {"data": "utf8"},
+    "resize": {"rows": "integer", "cols": "integer"},
+    "signal": {"name": "string"},
+    "close": {},
+    "ping": {},
+    "pong": {}
+  }
+}
