@@ -1,24 +1,19 @@
 # NexTerm Changelog
 
-## v0.3.0 — Terminal Core Update
+## v0.4.0 — NexTerm Userspace Foundation
 
 ### Added
-- Protocol v2 with client hello and session negotiation.
-- Explicit PTY resize messages and protocol limits.
-- Browser reconnect/status UI and keyboard handling.
-- Browser session/token fields.
-- Android command history and terminal clear action.
-- Automatic Android PTY resize from the terminal viewport.
-- API capability/version contract.
+- Private NexTerm userspace layout: prefix, home, tmp, packages and bin.
+- Environment initialization and diagnostics.
+- Real userspace architecture and package-system security contract.
+- Persistent-session architecture groundwork.
 
-### Security
-- Browser gateway sessions are explicitly authenticated by protocol design.
-- Production deployments should use short-lived session credentials rather than permanent browser URL secrets.
+### Important
+v0.4 is a foundation release. It does not claim root access, a complete Linux distribution, or a production package repository. The Android system shell remains a bootstrap/fallback until the NexTerm userspace runtime is populated.
 
 ### Next
-- Production VT100/VT220/xterm parser.
-- Alternate-screen and cursor state machine.
-- Persistent background PTY service.
-- Session reconnect after Android process recreation.
-- Package bootstrap and signed repository metadata.
-- Gateway rate limits and origin allowlists.
+- Persistent session service.
+- Real VT parser and terminal state machine.
+- Package bootstrap runtime and signed repository.
+- Browser-to-device pairing.
+- SSH/SFTP.
