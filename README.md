@@ -6,6 +6,14 @@
 
 NexTerm is a native Android terminal project with a browser client for explicitly connected remote PTY sessions. It uses a real kernel-backed PTY rather than simulated command output.
 
+## v0.5.7 — Browser ↔ Android Pairing
+
+Last update for today: NexTerm can now create short-lived browser pairing sessions with random tokens and a `nexterm://pair` QR payload contract. The browser accepts the payload and connects using the existing protocol-v2 session handshake.
+
+Security: pairing expires after five minutes by default; production gateways must validate expiration and use WSS.
+
+**Tomorrow: v0.6 — actual runtime bundle + package system + persistent sessions + VT/xterm engine + SSH/SFTP.**
+
 ## v0.5.0 — Actual Userspace Runtime Foundation
 
 v0.5 establishes the runtime boundary: versioned private runtime directories, package verification primitives, and PTY selection of `prefix/bin/sh` when an executable NexTerm shell is installed. Until a tested runtime bundle is installed, Android's system shell remains the explicit bootstrap fallback.
