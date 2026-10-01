@@ -4,15 +4,27 @@
 
 > Sponsorship / collaboration: **hunterkritik@gmail.com**
 
-NexTerm is being built as a real native Termux-class Android terminal, not a command-output simulator.
+NexTerm is a native Android terminal project with a browser client for explicitly connected remote PTY sessions. It uses a real kernel-backed PTY rather than simulated command output.
 
-## Two-in-one vision
+## v0.3.0 — Terminal Core Update
 
-**Android app:** Android UI -> Terminal Emulator -> PTY -> NDK -> Linux/Android userspace.
+- Real native Android PTY foundation
+- Interactive command history
+- Terminal clear action
+- Automatic PTY resize from viewport size
+- Browser WebSocket terminal with connection status
+- Browser reconnect and keyboard handling
+- Protocol v2 with authenticated `hello` and `resize`
+- API capability/session contract
+- GitHub Actions Android build validation
 
-**Browser client:** Browser -> authenticated WebSocket -> NexTerm Gateway -> PTY.
+## Two-in-one architecture
 
-The browser side does not fake a shell. It requires an explicit gateway/session.
+**Android:** Android UI → TerminalView → PTY → NDK → Android/Linux userspace.
+
+**Browser:** Browser → authenticated WebSocket → NexTerm Gateway → PTY.
+
+The browser does not fake a shell; a gateway/session must explicitly provide the PTY.
 
 ## Project layout
 
@@ -20,50 +32,57 @@ The browser side does not fake a shell. It requires an explicit gateway/session.
     terminal-emulator/
     nexterm-shared/
     browser/
+    api/
+    cli/
     docs/
 
-## Features
+## Roadmap
 
-- Real kernel-backed PTY sessions
-- Native NDK process layer
-- Dedicated terminal-emulator module
-- Java + Kotlin + C++ architecture
-- Shared Android/browser session protocol
-- Browser terminal UI
-- VT100/VT220/xterm parser roadmap
-- 256-color and true-color rendering
-- Cursor and alternate-screen support
-- Mouse reporting, selection and clipboard
-- Tabs, splits and persistent sessions
+### Terminal
+- Production VT100/VT220/xterm parser
+- ANSI colors, cursor state and alternate screen
+- Tabs, splits and persistent background sessions
 - Searchable scrollback and session recording
-- Hardware keyboard and custom terminal toolbar
-- File manager and environment profiles
-- Dedicated PREFIX filesystem
-- Native package manager and signed package repository
-- Git, OpenSSH, curl, Python and Clang
-- Rootless Linux distributions
-- NexTerm-native CLI and package manager
-- Browser WebSocket gateway and authentication
-- PWA-friendly browser terminal
+
+### Linux environment
+- PREFIX/bootstrap filesystem
+- Package manager and signed package metadata
+- Git, OpenSSH, curl, Python and Clang integration
+- Rootless Linux distribution support
+
+### Browser / Gateway
+- Authenticated session gateway
+- Short-lived session credentials
+- Origin allowlists and rate limits
+- PWA/offline shell UI
+
+### Developer platform
+- `https://api.nexterm.github.io`
+- OpenAPI specification in `api/openapi.yaml`
+- Shared protocol in `nexterm-shared/protocol.json`
+- CLI and SDK tooling
+
+## Build Android
+
+Requirements: Android Studio, Android SDK 35 and NDK 27.2.12479018.
+
+    ./gradlew :app:assembleDebug
+    adb install app/build/outputs/apk/debug/app-debug.apk
 
 ## Security
 
-NexTerm will not expose a privileged Android shell to arbitrary web content. Android recommends origin-allowlisted WebView messaging for native/web communication rather than unrestricted JavaScript bridges.
+NexTerm must not expose a privileged Android shell to arbitrary web content. Production browser sessions should use short-lived credentials and an authenticated gateway. Do not place long-lived secrets in browser URLs.
 
 ## Status
 
-Early engineering stage. The PTY foundation is real; the complete Linux userspace, package manager, production terminal parser, browser gateway and polished UI are under development.
-
-## Build
-
-Open in Android Studio with Android SDK 35 and NDK 27.2.12479018.
-
-    ./gradlew :app:assembleDebug
-
-    adb install app/build/outputs/apk/debug/app-debug.apk
+**v0.3.0 — active engineering.** The PTY foundation is real; production terminal parsing, persistent sessions, package/bootstrap support and the gateway are the next major milestones.
 
 ## Sponsorship
 
 For sponsorship, hardware support, infrastructure or collaboration:
 
 **hunterkritik@gmail.com**
+
+## License
+
+MIT
