@@ -1,7 +1,34 @@
-# NexTerm Architecture
+# NexTerm v0.4 architecture
 
-Android: Android UI -> Terminal Emulator -> PTY Session -> NDK -> forkpty -> Android userspace.
+NexTerm is moving from an Android-shell frontend toward a real unprivileged Linux userspace.
 
-Browser: Browser Terminal -> authenticated WebSocket -> NexTerm Gateway -> PTY Session.
+    Android UI
+        |
+    Terminal / VT parser
+        |
+    Session service
+        |
+    Native PTY
+        |
+    NexTerm userspace
+        |
+    prefix/bin + package store
 
-The browser never receives an unrestricted native Android bridge. Web content and privileged native operations remain separated.
+The Android system shell is only bootstrap/fallback. The long-term shell executes from the NexTerm prefix.
+
+## Userspace
+
+NexTerm owns prefix/, home/, tmp/, packages/ and bin/ under private app storage. No root access is assumed.
+
+## Package security
+
+Downloaded packages must be verified before execution. Extraction must reject absolute paths and ../ traversal and remain inside the private prefix.
+
+## v0.4 milestones
+
+- Bootstrap environment
+- Persistent session architecture
+- Native PTY lifecycle
+- Verified package contract
+- VT parser architecture
+- Browser pairing architecture
