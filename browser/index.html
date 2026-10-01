@@ -1,1 +1,63 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NexTerm</title><style>body{margin:0;background:#090b10;color:#ddd;font-family:monospace}#bar{padding:10px;background:#11141c}#term{padding:12px;white-space:pre-wrap;height:calc(100vh - 55px);overflow:auto}input{background:#090b10;color:#ddd;border:0;outline:0;width:80%;font:inherit}</style></head><body><div id="bar">NexTerm Browser · <input id="url" placeholder="WebSocket URL"></div><div id="term"></div><script>const term=document.getElementById('term'),input=document.getElementById('url');let ws;function print(s){term.textContent+=s;term.scrollTop=term.scrollHeight}input.addEventListener('keydown',e=>{if(e.key==='Enter'){ws=new WebSocket(input.value);ws.onmessage=x=>print(x.data);ws.onopen=()=>print('[connected]\n');ws.onclose=()=>print('\n[closed]\n')}});document.addEventListener('keydown',e=>{if(ws?.readyState===1&&e.target!==input){e.preventDefault();ws.send(JSON.stringify({type:'input',data:e.key==='Enter'?'\r':e.key==='Backspace'?'\x7f':e.key}))}});</script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NexTerm Browser Terminal</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#090b10;color:#ddd;font:14px ui-monospace,SFMono-Regular,monospace;display:flex;flex-direction:column;height:100vh}
+#bar{display:flex;gap:6px;align-items:center;padding:8px;background:#11141c;border-bottom:1px solid #252a36}
+input,button{background:#0b0e15;color:#ddd;border:1px solid #303746;border-radius:4px;padding:7px;font:inherit}
+#url{flex:1}button{cursor:pointer}.ok{color:#7ee787}.bad{color:#ff7b72}
+#term{flex:1;padding:12px;white-space:pre-wrap;overflow:auto;outline:none;line-height:1.35}
+#cmd{padding:8px;background:#11141c;border-top:1px solid #252a36}
+#status{min-width:80px}
+</style>
+</head>
+<body>
+<div id="bar">
+<strong>NexTerm</strong>
+<input id="url" placeholder="wss://gateway.example/session">
+<input id="token" type="password" placeholder="session token">
+<button id="connect">Connect</button><button id="clear">Clear</button><span id="status" class="bad">offline</span>
+</div>
+<div id="term" tabindex="0"></div>
+<div id="cmd">Protocol v2 · PTY WebSocket · focus terminal for keyboard input</div>
+<script>
+const term=document.getElementById('term'),url=document.getElementById('url'),token=document.getElementById('token');
+const status=document.getElementById('status'); let ws=null;
+const print=s=>{term.textContent+=s;term.scrollTop=term.scrollHeight};
+function setStatus(s,good){status.textContent=s;status.className=good?'ok':'bad'}
+function send(o){if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(o))}
+function connect(){
+ if(ws)ws.close(); if(!url.value)return;
+ try{ws=new WebSocket(url.value);setStatus('connecting',false);
+ ws.onopen=()=>{setStatus('online',true);print('\n[connected]\n');send({type:'hello',token:token.value,client:'nexterm-browser',version:'0.3.0'});resize()};
+ ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='output')print(m.data);else if(m.type==='pong')return;else print(e.data)}catch(_){print(e.data)}};
+ ws.onclose=()=>setStatus('offline',false);ws.onerror=()=>setStatus('error',false);
+ }catch(e){print('[connect error] '+e+'\n')}
+}
+function resize(){const cols=Math.max(8,Math.floor(term.clientWidth/8));const rows=Math.max(2,Math.floor(term.clientHeight/18));send({type:'resize',rows,cols})}
+document.getElementById('connect').onclick=connect;
+document.getElementById('clear').onclick=()=>term.textContent='';
+term.addEventListener('keydown',e=>{
+ if(e.target===url||e.target===token)return;
+ e.preventDefault();
+ let data=null;
+ if(e.ctrlKey&&e.key.toLowerCase()==='c')data='\u0003';
+ else if(e.key==='Enter')data='\r';
+ else if(e.key==='Backspace')data='\u007f';
+ else if(e.key==='Tab')data='\t';
+ else if(e.key==='ArrowUp')data='\u001b[A';
+ else if(e.key==='ArrowDown')data='\u001b[B';
+ else if(e.key==='ArrowLeft')data='\u001b[D';
+ else if(e.key==='ArrowRight')data='\u001b[C';
+ else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey)data=e.key;
+ if(data!==null)send({type:'input',data});
+});
+window.addEventListener('resize',resize);
+term.addEventListener('click',()=>term.focus());
+setInterval(()=>send({type:'ping'}),15000);
+</script>
+</body>
+</html>
