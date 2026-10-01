@@ -23,7 +23,7 @@ class MainActivity : Activity() {
             setBackgroundColor(0xFF090B10.toInt())
         }
 
-        terminal = TerminalView(this).apply {
+        NexTermEnvironment.initialize(this)\n\n        terminal = TerminalView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
             )
