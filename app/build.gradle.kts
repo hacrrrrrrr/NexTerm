@@ -9,8 +9,8 @@ android {
         applicationId = "com.hacrrrrrrr.nexterm"
         minSdk = 23
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 3
+        versionName = "0.3.0"
     }
     ndkVersion = "27.2.12479018"
     buildFeatures { buildConfig = true }
