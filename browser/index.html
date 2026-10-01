@@ -1,61 +1,141 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NexTerm Browser Terminal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>NexTerm — Browser Terminal</title>
 <style>
-:root{color-scheme:dark}body{margin:0;background:#090b10;color:#ddd;font:14px ui-monospace,SFMono-Regular,monospace;display:flex;flex-direction:column;height:100vh}
-#bar{display:flex;gap:6px;align-items:center;padding:8px;background:#11141c;border-bottom:1px solid #252a36}
-input,button{background:#0b0e15;color:#ddd;border:1px solid #303746;border-radius:4px;padding:7px;font:inherit}
-#url{flex:1}button{cursor:pointer}.ok{color:#7ee787}.bad{color:#ff7b72}
-#term{flex:1;padding:12px;white-space:pre-wrap;overflow:auto;outline:none;line-height:1.35}
-#cmd{padding:8px;background:#11141c;border-top:1px solid #252a36}
-#status{min-width:80px}
+:root{color-scheme:dark;--bg:#07090d;--panel:#0d1118;--panel2:#111722;--line:#202938;--text:#e7edf5;--muted:#8491a5;--accent:#7c5cff;--green:#42d392;--red:#ff6b7a}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+body{display:flex;flex-direction:column}
+button,input{font:inherit;color:inherit}button{border:0;cursor:pointer}
+.top{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(13,17,24,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;white-space:nowrap}.logo{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#8c6cff,#4b35c7);box-shadow:0 5px 20px #4d36c755}
+.brand small{display:block;color:var(--muted);font-size:9px;font-weight:500;margin-top:2px}
+.status{display:flex;align-items:center;gap:6px;margin-left:auto;color:var(--muted);font-size:11px}.dot{width:7px;height:7px;border-radius:50%;background:var(--red)}.status.online{color:var(--green)}.status.online .dot{background:var(--green);box-shadow:0 0 9px var(--green)}
+.icon{width:38px;height:38px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center}.icon:active{transform:scale(.96)}
+.workspace{min-height:0;flex:1;display:flex;position:relative}
+.terminal-wrap{min-width:0;flex:1;display:flex;flex-direction:column;background:#05070a}
+.terminal-head{height:38px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid #151b25;color:var(--muted);font-size:11px}.traffic{display:flex;gap:5px}.traffic i{width:8px;height:8px;border-radius:50%;background:#303746}.terminal-title{margin-left:4px}.terminal-title b{color:#cbd5e1}
+#term{min-height:0;flex:1;padding:14px 16px 28px;white-space:pre-wrap;overflow:auto;outline:0;line-height:1.5;font-size:14px;color:#d9e1eb;word-break:break-word;caret-color:transparent}
+#term::selection{background:#4b3f77}
+.welcome{color:var(--muted);user-select:none}.welcome strong{color:#c7baff}.welcome .cmd{color:#7f8ea4}
+.mobile-keys{display:none;height:43px;overflow-x:auto;gap:6px;padding:5px 8px;background:#0a0d13;border-top:1px solid var(--line);scrollbar-width:none}.mobile-keys::-webkit-scrollbar{display:none}
+.key{flex:0 0 auto;min-width:40px;padding:8px 11px;border-radius:8px;background:#151b25;border:1px solid #273142;color:#b9c5d5;font-size:12px}.key:active{background:#252e3d}
+.bottom{display:flex;align-items:center;gap:8px;padding:9px 12px;padding-bottom:max(9px,env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line)}
+.field{min-width:0;flex:1;height:42px;padding:0 12px;border:1px solid #283243;border-radius:10px;background:#090c12;outline:0;font-size:12px}.field:focus{border-color:#5e4bc0;box-shadow:0 0 0 3px #5e4bc022}
+.primary{height:42px;padding:0 15px;border-radius:10px;background:var(--accent);font-weight:700}.primary:active{transform:scale(.97)}
+.secondary{height:42px;padding:0 12px;border-radius:10px;background:#171e29;border:1px solid #283243;color:#c6d0df}
+.drawer{position:absolute;z-index:10;right:12px;top:12px;width:min(390px,calc(100% - 24px));padding:16px;border:1px solid #293447;border-radius:16px;background:#0d121a;box-shadow:0 20px 60px #000b;display:none}.drawer.open{display:block}.drawer h3{margin:0 0 5px;font-size:15px}.drawer p{margin:0 0 14px;color:var(--muted);font-size:11px;line-height:1.5}.drawer label{display:block;color:#8996aa;font-size:10px;margin:10px 0 5px}.drawer input{width:100%;height:42px;padding:0 11px;border:1px solid #293447;border-radius:9px;background:#080b10;outline:0}.drawer-actions{display:flex;gap:7px;margin-top:12px}.drawer-actions>*{flex:1}
+.toast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,10px);padding:9px 12px;border-radius:9px;background:#161d29;border:1px solid #303b4e;color:#dbe5f2;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:30}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){
+ .top{height:54px;flex-basis:54px;padding:7px 9px}.brand small{display:none}.brand{font-size:14px}.logo{width:29px;height:29px}
+ .status{font-size:10px}.workspace{display:block}
+ #term{padding:12px;font-size:13px;line-height:1.45}
+ .terminal-head{height:34px;padding:0 10px}
+ .mobile-keys{display:flex}
+ .bottom{padding:7px 8px;padding-bottom:max(7px,env(safe-area-inset-bottom));gap:6px}
+ .bottom .field{height:40px}.bottom .primary{height:40px;padding:0 12px}.bottom .secondary{display:none}
+ .drawer{top:7px;right:7px;width:calc(100% - 14px)}
+}
+@media(min-width:701px){.mobile-keys{display:none}}
 </style>
 </head>
 <body>
-<div id="bar">
-<strong>NexTerm</strong>
-<input id="url" placeholder="wss://gateway.example/session">
-<input id="token" type="password" placeholder="session token"><input id="pair" placeholder="nexterm://pair QR payload">
-<button id="pairbtn">Pair</button><button id="connect">Connect</button><button id="clear">Clear</button><span id="status" class="bad">offline</span>
+<header class="top">
+  <div class="brand"><div class="logo">N&gt;_</div><div>NexTerm<small>WEB TERMINAL</small></div></div>
+  <div id="status" class="status"><span class="dot"></span><span>offline</span></div>
+  <button class="icon" id="settings" aria-label="Connection settings">⚙</button>
+</header>
+
+<main class="workspace">
+  <section class="terminal-wrap">
+    <div class="terminal-head"><span class="traffic"><i></i><i></i><i></i></span><span class="terminal-title"><b>nexterm</b> · session</span></div>
+    <div id="term" tabindex="0" role="log" aria-label="NexTerm terminal"><div class="welcome"><strong>NexTerm Browser Terminal</strong>
+<span class="cmd">Protocol v2 · WebSocket PTY</span>
+
+Pair your Android NexTerm session with a QR code, or open connection settings to connect manually.
+
+<span class="cmd">Tip: tap the terminal to focus keyboard input.</span>
+</div></div>
+    <div class="mobile-keys" aria-label="Terminal shortcuts">
+      <button class="key" data-key="CTRL">CTRL</button><button class="key" data-key="TAB">TAB</button><button class="key" data-key="ESC">ESC</button><button class="key" data-key="UP">↑</button><button class="key" data-key="DOWN">↓</button><button class="key" data-key="LEFT">←</button><button class="key" data-key="RIGHT">→</button><button class="key" data-key="|">|</button><button class="key" data-key="/">/</button>
+    </div>
+  </section>
+
+  <aside class="drawer" id="drawer">
+    <h3>Connect to NexTerm</h3>
+    <p>Use a QR pairing payload from Android or enter a WebSocket endpoint manually.</p>
+    <label for="pair">QR pairing payload</label>
+    <input id="pair" placeholder="nexterm://pair?...">
+    <div class="drawer-actions"><button class="primary" id="pairbtn">Apply QR</button><button class="secondary" id="paste">Paste</button></div>
+    <label for="url">WebSocket endpoint</label>
+    <input id="url" placeholder="wss://gateway.example/session" autocomplete="off">
+    <label for="token">Session token</label>
+    <input id="token" type="password" placeholder="short-lived token" autocomplete="off">
+    <div class="drawer-actions"><button class="primary" id="connect">Connect</button><button class="secondary" id="clear">Clear terminal</button></div>
+  </aside>
+</main>
+
+<div class="bottom">
+  <input id="input" class="field" placeholder="Tap terminal and type a command…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+  <button class="secondary" id="disconnect">Stop</button>
+  <button class="primary" id="send">Send</button>
 </div>
-<div id="term" tabindex="0"></div>
-<div id="cmd">Protocol v2 · PTY WebSocket · focus terminal for keyboard input</div>
+<div class="toast" id="toast"></div>
+
 <script>
-const term=document.getElementById('term'),url=document.getElementById('url'),token=document.getElementById('token');
-const status=document.getElementById('status'); let ws=null;
-function applyPair(){try{const u=new URL(document.getElementById('pair').value);if(u.protocol!=='nexterm:')throw Error('invalid scheme');url.value=u.searchParams.get('endpoint')||'';token.value=u.searchParams.get('token')||'';print('[pairing payload accepted]\\n')}catch(e){print('[pairing error] '+e+'\\n')}}
-const print=s=>{term.textContent+=s;term.scrollTop=term.scrollHeight};
-function setStatus(s,good){status.textContent=s;status.className=good?'ok':'bad'}
+const term=document.getElementById('term'),input=document.getElementById('input'),url=document.getElementById('url'),token=document.getElementById('token'),drawer=document.getElementById('drawer'),toast=document.getElementById('toast');
+let ws=null,ctrl=false;
+const statusEl=document.getElementById('status');
+function print(s){term.textContent+=s;term.scrollTop=term.scrollHeight}
+function toastMsg(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}
+function setStatus(s,good=false){statusEl.className='status'+(good?' online':'');statusEl.querySelector('span:last-child').textContent=s}
 function send(o){if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(o))}
+function resize(){const cols=Math.max(10,Math.floor(term.clientWidth/8));const rows=Math.max(2,Math.floor(term.clientHeight/19));send({type:'resize',rows,cols})}
 function connect(){
- if(ws)ws.close(); if(!url.value)return;
- try{ws=new WebSocket(url.value);setStatus('connecting',false);
- ws.onopen=()=>{setStatus('online',true);print('\n[connected]\n');send({type:'hello',token:token.value,client:'nexterm-browser',version:'0.5.7'});resize()};
- ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='output')print(m.data);else if(m.type==='pong')return;else print(e.data)}catch(_){print(e.data)}};
- ws.onclose=()=>setStatus('offline',false);ws.onerror=()=>setStatus('error',false);
- }catch(e){print('[connect error] '+e+'\n')}
+ if(ws)ws.close();
+ if(!url.value.trim()){toastMsg('Enter a WebSocket endpoint');drawer.classList.add('open');return}
+ try{
+  ws=new WebSocket(url.value.trim());setStatus('connecting');
+  ws.onopen=()=>{setStatus('online',true);print('\n[connected]\n');send({type:'hello',token:token.value,client:'nexterm-browser',version:'0.5.7',session:new URLSearchParams(new URL(url.value).search).get('session')||''});resize();toastMsg('Connected')};
+  ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='output')print(m.data);else if(m.type==='pong')return;else print(String(e.data))}catch(_){print(String(e.data))}};
+  ws.onclose=()=>{setStatus('offline');ws=null};ws.onerror=()=>{setStatus('error');toastMsg('WebSocket connection failed')};
+ }catch(e){setStatus('error');print('[connect error] '+e+'\n')}
 }
-function resize(){const cols=Math.max(8,Math.floor(term.clientWidth/8));const rows=Math.max(2,Math.floor(term.clientHeight/18));send({type:'resize',rows,cols})}
+function applyPair(){
+ try{
+  const u=new URL(document.getElementById('pair').value.trim());
+  if(u.protocol!=='nexterm:')throw Error('invalid pairing scheme');
+  url.value=u.searchParams.get('endpoint')||'';token.value=u.searchParams.get('token')||'';
+  toastMsg('QR pairing loaded');drawer.classList.remove('open');connect();
+ }catch(e){toastMsg('Invalid pairing payload')}
+}
+function write(data){send({type:'input',data})}
+function sendLine(){if(input.value){write(input.value);write('\r');input.value=''}}
+document.getElementById('settings').onclick=()=>drawer.classList.toggle('open');
 document.getElementById('pairbtn').onclick=applyPair;
 document.getElementById('connect').onclick=connect;
-document.getElementById('clear').onclick=()=>term.textContent='';
+document.getElementById('disconnect').onclick=()=>{if(ws){ws.close();ws=null}setStatus('offline')};
+document.getElementById('clear').onclick=()=>{term.innerHTML=''};
+document.getElementById('send').onclick=sendLine;
+document.getElementById('paste').onclick=async()=>{try{document.getElementById('pair').value=await navigator.clipboard.readText();toastMsg('Pasted')}catch(_){toastMsg('Clipboard permission denied')}};
+input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendLine()}});
 term.addEventListener('keydown',e=>{
- if(e.target===url||e.target===token)return;
+ if(e.ctrlKey&&e.key.toLowerCase()==='c'){e.preventDefault();write('\u0003');return}
+ if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;
  e.preventDefault();
- let data=null;
- if(e.ctrlKey&&e.key.toLowerCase()==='c')data='\u0003';
- else if(e.key==='Enter')data='\r';
- else if(e.key==='Backspace')data='\u007f';
- else if(e.key==='Tab')data='\t';
- else if(e.key==='ArrowUp')data='\u001b[A';
- else if(e.key==='ArrowDown')data='\u001b[B';
- else if(e.key==='ArrowLeft')data='\u001b[D';
- else if(e.key==='ArrowRight')data='\u001b[C';
- else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey)data=e.key;
- if(data!==null)send({type:'input',data});
+ const map={Enter:'\r',Backspace:'\u007f',Tab:'\t',Escape:'\u001b',ArrowUp:'\u001b[A',ArrowDown:'\u001b[B',ArrowLeft:'\u001b[D',ArrowRight:'\u001b[C'};
+ if(map[e.key])write(map[e.key]);else if(e.key.length===1&&!e.metaKey)write(e.key);
+});
+document.querySelectorAll('.key').forEach(b=>b.onclick=()=>{
+ const k=b.dataset.key;
+ if(k==='CTRL'){ctrl=!ctrl;b.style.background=ctrl?'#4b3a9b':'';return}
+ const map={TAB:'\t',ESC:'\u001b',UP:'\u001b[A',DOWN:'\u001b[B',LEFT:'\u001b[D',RIGHT:'\u001b[C'};
+ write(map[k]||k);term.focus();
 });
 window.addEventListener('resize',resize);
 term.addEventListener('click',()=>term.focus());
