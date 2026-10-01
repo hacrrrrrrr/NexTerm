@@ -18,26 +18,28 @@ input,button{background:#0b0e15;color:#ddd;border:1px solid #303746;border-radiu
 <div id="bar">
 <strong>NexTerm</strong>
 <input id="url" placeholder="wss://gateway.example/session">
-<input id="token" type="password" placeholder="session token">
-<button id="connect">Connect</button><button id="clear">Clear</button><span id="status" class="bad">offline</span>
+<input id="token" type="password" placeholder="session token"><input id="pair" placeholder="nexterm://pair QR payload">
+<button id="pairbtn">Pair</button><button id="connect">Connect</button><button id="clear">Clear</button><span id="status" class="bad">offline</span>
 </div>
 <div id="term" tabindex="0"></div>
 <div id="cmd">Protocol v2 · PTY WebSocket · focus terminal for keyboard input</div>
 <script>
 const term=document.getElementById('term'),url=document.getElementById('url'),token=document.getElementById('token');
 const status=document.getElementById('status'); let ws=null;
+function applyPair(){try{const u=new URL(document.getElementById('pair').value);if(u.protocol!=='nexterm:')throw Error('invalid scheme');url.value=u.searchParams.get('endpoint')||'';token.value=u.searchParams.get('token')||'';print('[pairing payload accepted]\\n')}catch(e){print('[pairing error] '+e+'\\n')}}
 const print=s=>{term.textContent+=s;term.scrollTop=term.scrollHeight};
 function setStatus(s,good){status.textContent=s;status.className=good?'ok':'bad'}
 function send(o){if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(o))}
 function connect(){
  if(ws)ws.close(); if(!url.value)return;
  try{ws=new WebSocket(url.value);setStatus('connecting',false);
- ws.onopen=()=>{setStatus('online',true);print('\n[connected]\n');send({type:'hello',token:token.value,client:'nexterm-browser',version:'0.3.0'});resize()};
+ ws.onopen=()=>{setStatus('online',true);print('\n[connected]\n');send({type:'hello',token:token.value,client:'nexterm-browser',version:'0.5.7'});resize()};
  ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='output')print(m.data);else if(m.type==='pong')return;else print(e.data)}catch(_){print(e.data)}};
  ws.onclose=()=>setStatus('offline',false);ws.onerror=()=>setStatus('error',false);
  }catch(e){print('[connect error] '+e+'\n')}
 }
 function resize(){const cols=Math.max(8,Math.floor(term.clientWidth/8));const rows=Math.max(2,Math.floor(term.clientHeight/18));send({type:'resize',rows,cols})}
+document.getElementById('pairbtn').onclick=applyPair;
 document.getElementById('connect').onclick=connect;
 document.getElementById('clear').onclick=()=>term.textContent='';
 term.addEventListener('keydown',e=>{
