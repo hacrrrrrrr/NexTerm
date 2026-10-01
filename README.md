@@ -6,6 +6,19 @@
 
 NexTerm is a native Android terminal project with a browser client for explicitly connected remote PTY sessions. It uses a real kernel-backed PTY rather than simulated command output.
 
+## v0.5.0 — Actual Userspace Runtime Foundation
+
+v0.5 establishes the runtime boundary: versioned private runtime directories, package verification primitives, and PTY selection of `prefix/bin/sh` when an executable NexTerm shell is installed. Until a tested runtime bundle is installed, Android's system shell remains the explicit bootstrap fallback.
+
+### v0.5 additions
+- Runtime manager and status
+- Runtime `prefix/bin`, `lib`, `share`, `etc`
+- SHA-256 package verification
+- Safe extraction path validation
+- PTY prefers the NexTerm runtime shell
+
+**Next: v0.6 — ship and test the actual multi-ABI runtime bundle, package installer/repository, persistent sessions, VT parser and SSH/SFTP.**
+
 ## v0.4.0 — NexTerm Userspace Foundation
 
 NexTerm now creates its own private unprivileged userspace (`prefix/`, `home/`, `tmp/`, `packages/`, `bin/`) on Android. This is the foundation for a real Linux environment rather than simply wrapping `/system/bin/sh`.
