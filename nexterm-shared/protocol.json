@@ -1,6 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
+  "name": "nexterm-session",
+  "encoding": "utf-8",
   "messages": {
+    "hello": {"token": "string", "client": "string", "version": "string"},
     "input": {"data": "utf8"},
     "output": {"data": "utf8"},
     "resize": {"rows": "integer", "cols": "integer"},
@@ -8,5 +11,14 @@
     "close": {},
     "ping": {},
     "pong": {}
-  }
+  },
+  "rules": {
+    "rows_min": 2,
+    "rows_max": 500,
+    "cols_min": 8,
+    "cols_max": 500,
+    "max_input_bytes": 65536,
+    "max_output_bytes": 1048576
+  },
+  "compatibility": {"previous": [1], "unknown_messages": "ignore"}
 }
