@@ -3,7 +3,8 @@
   "name": "nexterm-session",
   "encoding": "utf-8",
   "messages": {
-    "hello": {"token": "string", "client": "string", "version": "string"},
+    "hello": {"token": "string", "client": "string", "version": "string", "session": "string"},
+    "pair": {"session": "string", "token": "string", "expires": "integer"},
     "input": {"data": "utf8"},
     "output": {"data": "utf8"},
     "resize": {"rows": "integer", "cols": "integer"},
