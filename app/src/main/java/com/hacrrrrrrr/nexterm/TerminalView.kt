@@ -12,7 +12,7 @@ class TerminalView(context: Context) : View(context) {
     private var current = StringBuilder()
     var onKey: ((String) -> Unit)? = null
     init { setBackgroundColor(0xFF090B10.toInt()); isFocusableInTouchMode = true }
-    fun append(bytes: ByteArray) {
+    fun clearScreen() {\n        lines.clear()\n        current = StringBuilder()\n        invalidate()\n    }\n\n    fun append(bytes: ByteArray) {
         val text = bytes.toString(Charsets.UTF_8)
         var i = 0
         while (i < text.length) {
