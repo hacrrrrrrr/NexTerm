@@ -1,19 +1,17 @@
 # NexTerm Changelog
 
-## v0.4.0 — NexTerm Userspace Foundation
+## v0.5.7 — Browser to Android Pairing
 
-### Added
-- Private NexTerm userspace layout: prefix, home, tmp, packages and bin.
-- Environment initialization and diagnostics.
-- Real userspace architecture and package-system security contract.
-- Persistent-session architecture groundwork.
+- Short-lived pairing sessions.
+- Random URL-safe session IDs and tokens.
+- nexterm://pair QR payload format.
+- Local pairing metadata storage and clearing.
+- Browser pairing security documentation.
 
-### Important
-v0.4 is a foundation release. It does not claim root access, a complete Linux distribution, or a production package repository. The Android system shell remains a bootstrap/fallback until the NexTerm userspace runtime is populated.
+## Next: v0.6
 
-### Next
-- Persistent session service.
-- Real VT parser and terminal state machine.
-- Package bootstrap runtime and signed repository.
-- Browser-to-device pairing.
+- Real multi-ABI runtime bundle.
+- Package installer and signed repository.
+- Persistent sessions.
+- Full VT/xterm parser.
 - SSH/SFTP.
