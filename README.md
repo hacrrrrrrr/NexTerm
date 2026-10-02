@@ -6,13 +6,25 @@
 
 NexTerm is a native Android terminal project with a browser client for explicitly connected remote PTY sessions. It uses a real kernel-backed PTY rather than simulated command output.
 
+## v0.6.0 — Kotlin Runtime + CLI/Package Layer
+
+NexTerm now wires the Android app to dedicated Kotlin internal/session and package modules. The native nx CLI uses the same 0.6 command contract and maintains real local session/package state instead of placeholder success messages.
+
+### v0.6 additions
+- Kotlin SessionStore internal runtime API
+- Kotlin PackageSpec and PackageIndex package APIs
+- Gradle modules for nexterm-internal and packages:cli
+- Android app depends on both Kotlin modules
+- Native CLI 0.6 session and package state commands
+- API endpoint and userspace configuration diagnostics
+
 ## v0.5.7 — Browser ↔ Android Pairing
 
 Last update for today: NexTerm can now create short-lived browser pairing sessions with random tokens and a `nexterm://pair` QR payload contract. The browser accepts the payload and connects using the existing protocol-v2 session handshake.
 
 Security: pairing expires after five minutes by default; production gateways must validate expiration and use WSS.
 
-**Tomorrow: v0.6 — actual runtime bundle + package system + persistent sessions + VT/xterm engine + SSH/SFTP.**
+**Next: v0.7 — persistent PTY sessions, runtime bundle/bootstrap, production VT/xterm engine and SSH/SFTP.**
 
 ## v0.5.0 — Actual Userspace Runtime Foundation
 
@@ -126,8 +138,10 @@ The browser does not fake a shell; a gateway/session must explicitly provide the
 ## Project layout
 
     app/
-    terminal-emulator/
+    nexterm-internal/
     nexterm-shared/
+    packages/cli/
+    terminal-emulator/
     browser/
     api/
     cli/
@@ -172,7 +186,7 @@ NexTerm must not expose a privileged Android shell to arbitrary web content. Pro
 
 ## Status
 
-**v0.5.7 — active engineering.** The PTY foundation is real; production terminal parsing, persistent sessions, package/bootstrap support and the gateway are the next major milestones.
+**v0.6.0 — active engineering.** The PTY foundation is real; production terminal parsing, persistent sessions, package/bootstrap support and the gateway are the next major milestones.
 
 ## Sponsorship
 
