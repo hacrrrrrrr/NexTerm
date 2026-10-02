@@ -8,12 +8,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import java.io.File
+import com.hacrrrrrrr.nexterm.internal.SessionStore
+import com.hacrrrrrrr.nexterm.pkg.PackageIndex
 
 class MainActivity : Activity() {
     private lateinit var terminal: TerminalView
     private var pty: PtyProcess? = null
     private val history = ArrayList<String>()
     private var historyIndex = 0
+    private val sessionStore = SessionStore()
+    private val packageIndex = PackageIndex()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +27,10 @@ class MainActivity : Activity() {
             setBackgroundColor(0xFF090B10.toInt())
         }
 
-        NexTermEnvironment.initialize(this)\n\n        terminal = TerminalView(this).apply {
+        NexTermEnvironment.initialize(this)
+        sessionStore.create()
+
+        terminal = TerminalView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
             )
