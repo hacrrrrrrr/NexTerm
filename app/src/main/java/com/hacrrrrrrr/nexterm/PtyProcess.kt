@@ -11,8 +11,10 @@ class PtyProcess(
 ) {
     companion object {
         init { System.loadLibrary("nexterm-pty") }
-        private const val MIN_DIM = 2
-        private const val MAX_DIM = 500
+        private const val MIN_ROWS = 2
+        private const val MAX_ROWS = 500
+        private const val MIN_COLS = 8
+        private const val MAX_COLS = 500
     }
 
     @JvmField var nativeFd: Int = -1
@@ -63,7 +65,8 @@ class PtyProcess(
         val bytes = text.toByteArray(Charsets.UTF_8)
         var offset = 0
         while (offset < bytes.size && running.get()) {
-            val written = nativeWrite(bytes, bytes.size - offset)
+            val remaining = bytes.copyOfRange(offset, bytes.size)
+            val written = nativeWrite(remaining, remaining.size)
             if (written <= 0) return false
             offset += written
         }
@@ -71,7 +74,7 @@ class PtyProcess(
     }
 
     fun resize(rows: Int, cols: Int) {
-        if (rows !in MIN_DIM..MAX_DIM || cols !in MIN_DIM..MAX_DIM) return
+        if (rows !in MIN_ROWS..MAX_ROWS || cols !in MIN_COLS..MAX_COLS) return
         if (running.get()) nativeResize(rows, cols)
     }
 
