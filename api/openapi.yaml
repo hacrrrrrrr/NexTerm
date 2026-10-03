@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: NexTerm API
-  version: 0.3.0
-  description: Public contract for NexTerm clients and gateways.
+  version: 0.7.0
+  description: Public contract for NexTerm clients and authenticated session gateways.
 servers:
   - url: https://api.nexterm.github.io
 paths:
@@ -10,37 +10,62 @@ paths:
     get:
       summary: Service health
       responses:
-        "200":
-          description: Healthy
+        "200": {description: Healthy}
   /capabilities:
     get:
-      summary: Discover NexTerm capabilities
+      summary: Discover protocol and server capabilities
       responses:
         "200":
           description: Capability document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Capabilities"
   /sessions:
     get:
       summary: List sessions visible to the authenticated client
       security: [{bearerAuth: []}]
       responses:
         "200": {description: Session list}
+        "401": {description: Authentication required}
     post:
       summary: Create a PTY session
       security: [{bearerAuth: []}]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSession"
       responses:
         "201": {description: Session created}
+        "400": {description: Invalid request}
+        "401": {description: Authentication required}
+        "429": {description: Rate limit exceeded}
   /sessions/{id}:
     delete:
       summary: Close a PTY session
       security: [{bearerAuth: []}]
       parameters:
-        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: id, in: path, required: true, schema: {type: string, minLength: 1, maxLength: 128}}
       responses:
         "204": {description: Session removed}
+        "401": {description: Authentication required}
         "404": {description: Session not found}
+  /sessions/{id}/pair:
+    post:
+      summary: Create a short-lived browser pairing credential
+      security: [{bearerAuth: []}]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, minLength: 1, maxLength: 128}}
+      responses:
+        "201": {description: Pairing created}
+        "401": {description: Authentication required}
+        "404": {description: Session not found}
+        "429": {description: Rate limit exceeded}
   /packages:
     get:
-      summary: Get package index
+      summary: Get signed package index
       responses:
         "200": {description: Package index}
 components:
@@ -48,3 +73,22 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    CreateSession:
+      type: object
+      additionalProperties: false
+      properties:
+        shell: {type: string, maxLength: 256}
+        rows: {type: integer, minimum: 2, maximum: 500, default: 24}
+        cols: {type: integer, minimum: 8, maximum: 500, default: 80}
+    Capabilities:
+      type: object
+      additionalProperties: false
+      properties:
+        protocol: {type: integer, example: 2}
+        maxInputBytes: {type: integer, example: 65536}
+        maxOutputBytes: {type: integer, example: 1048576}
+        pairingLifetimeMs: {type: integer, example: 300000}
+        features:
+          type: array
+          items: {type: string}

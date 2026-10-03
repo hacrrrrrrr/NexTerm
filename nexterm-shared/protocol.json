@@ -11,7 +11,8 @@
     "signal": {"name": "string"},
     "close": {},
     "ping": {},
-    "pong": {}
+    "pong": {},
+    "error": {"code": "string", "message": "string"}
   },
   "rules": {
     "rows_min": 2,
@@ -19,7 +20,18 @@
     "cols_min": 8,
     "cols_max": 500,
     "max_input_bytes": 65536,
-    "max_output_bytes": 1048576
+    "max_output_bytes": 1048576,
+    "max_control_message_bytes": 16384,
+    "token_min_bytes": 32,
+    "pairing_max_lifetime_ms": 600000,
+    "require_expiry_validation": true,
+    "single_use_pairing_recommended": true
+  },
+  "security": {
+    "transport": "wss_required_in_production",
+    "tokens": "short_lived_bearer",
+    "server_must_validate": ["session", "token", "expires"],
+    "never_persist_long_lived_credentials": true
   },
   "compatibility": {"previous": [1], "unknown_messages": "ignore"}
 }
