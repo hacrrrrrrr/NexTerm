@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [main, feature/**]
+    branches: [main, "feature/**"]
   pull_request:
     branches: [main]
 
@@ -28,6 +28,6 @@ jobs:
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       - name: Run JVM tests
         run: ./gradlew test --no-daemon
-      - name: Dependency vulnerability scan
-        uses: dependency-review-action@v4
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4
         if: github.event_name == 'pull_request'
