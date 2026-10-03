@@ -18,6 +18,23 @@ NexTerm now wires the Android app to dedicated Kotlin internal/session and packa
 - Native CLI 0.6 session and package state commands
 - API endpoint and userspace configuration diagnostics
 
+## v0.7.0 — Security + Reliability Update
+
+This update hardens the browser-pairing and native PTY paths while keeping protocol v2 compatible.
+
+### v0.7 additions
+
+* Ephemeral pairing bearer credentials; tokens are no longer persisted to Android preferences
+* Pairing endpoint validation and bounded credential lifetime
+* Cleartext Android traffic disabled by default
+* Native PTY read/write error handling and bounded terminal dimensions
+* Safer partial-write handling from Kotlin to the native PTY
+* Protocol error message and explicit message-size/security limits
+* Expanded API contract for authenticated session pairing
+* Security policy and private vulnerability-reporting guidance
+* JVM tests for pairing validation and expiry
+* Dependency review in pull-request CI
+
 ## v0.5.7 — Browser ↔ Android Pairing
 
 Last update for today: NexTerm can now create short-lived browser pairing sessions with random tokens and a `nexterm://pair` QR payload contract. The browser accepts the payload and connects using the existing protocol-v2 session handshake.
